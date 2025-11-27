@@ -1,4 +1,5 @@
-import SignUpPageForm from "./components/_molecules/signUpPageForm/SignUpPageForm";
+import SignInPageForm from "./components/_molecules/signInPageForm/SignInPageForm";
+import SignUpPageForm from "./components/_molecules/signInPageForm/SignInPageForm";
 import SignUpPageImages from "./components/_molecules/signUpPageImages/SignUpPageImages";
 
 
@@ -15,7 +16,7 @@ export default function Home() {
         <h1 className=" text-6xl font-hotel text-center text-white mb-6 ">
           Sick Nation
         </h1>
-        <SignUpPageForm />
+        <SignInPageForm />
       </div>
     </div>
   );
