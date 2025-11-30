@@ -20,9 +20,9 @@ export default function page() {
                         </div>
                     </div>
                     <div className="mt-4 w-full max-w-md text-center md:text-left">
-                        <h1 className="text-white text-[25px]">
+                        <h1 className="text-white text-[25px] max-[500px]:text-[20px]" >
                             already have an account?{" "}
-                            <Link href="#" className="text-amber-500 font-semibold hover:underline transition-colors duration-200">
+                            <Link href="/" className="text-amber-500 font-semibold hover:underline transition-colors duration-200">
                                 Sign In
                             </Link>
                         </h1>

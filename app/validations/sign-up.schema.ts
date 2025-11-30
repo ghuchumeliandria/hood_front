@@ -11,7 +11,7 @@ export const signUpSchema = yup.object({
       confirmPassword :yup.string().min(8).max(20).matches(
         /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,20}$/,
         "პაროლუ უნდა შეიცავდეს დიდ და პატარა ასოს , ასევე ციფრს"
-      ).required("გთხოვთ შეავსოთ ველი")
+      ).required("გთხოვთ შეავსოთ ველი").oneOf([yup.ref("password")], "Passwords do not match")
 })
 
 export type SignUpType = InferType<typeof signUpSchema>

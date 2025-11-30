@@ -6,14 +6,14 @@ import SignUpPageImages from "./components/_molecules/signUpPageImages/SignUpPag
 
 export default function Home() {
   return (
-    <div className="w-full min-h-screen flex flex-col md:flex-row items-center justify-between  px-2 md:px-20 bg-linear-to-r from-orange-500 to-yellow-300">
+    <div className="w-full min-h-screen flex    items-center justify-between  px-10 py-6 gap-2 bg-linear-to-r from-orange-500 to-yellow-300 max-[1260px]:flex-col max-[1260px]:justify-center max-[500px]:justify-start max-[500px]:py-12 transition-all duration-200">
 
-      <div className=" flex justify-center items-center mb-10 md:mb-0 relative">
+      <div className="relative">
         <SignUpPageImages />
       </div>
 
       <div className=" flex flex-col w-full max-w-[400px] ">
-        <h1 className=" text-6xl font-hotel text-center text-white mb-6 ">
+        <h1 className=" text-6xl  font-hotel text-center text-white mb-6 max-[500px]:text-[36px] ">
           Sick Nation
         </h1>
         <SignInPageForm />
