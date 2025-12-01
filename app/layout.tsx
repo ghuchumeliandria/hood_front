@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Grand_Hotel } from "next/font/google";
 import "./globals.css";
+import ConditionalHeader from "./components/_molecules/contidionalHeader/ConditionalHeader";
+import ContentWrapper from "./components/_molecules/contentWrapper/ContentWrapper";
 
 
 const geistSans = Geist({
@@ -24,16 +26,20 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
+
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${grandHotel.variable} antialiased`}
       >
-        {children}
+        <ConditionalHeader />
+        <ContentWrapper>{children}</ContentWrapper>
       </body>
     </html>
   );
