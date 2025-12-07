@@ -39,7 +39,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${grandHotel.variable} antialiased`}
       >
         <ConditionalHeader />
-        <ContentWrapper>{children}</ContentWrapper>
+        <ContentWrapper>
+          {children}
+        </ContentWrapper>
       </body>
     </html>
   );

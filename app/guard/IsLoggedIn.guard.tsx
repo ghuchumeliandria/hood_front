@@ -15,10 +15,9 @@ export default function IsLoggedIn({ children }: { children: React.ReactNode }) 
                 router.push('/')
             }
             else {
-
                 setChecking(false)
             }
-        }, 200) // <-- 200ms
+        }, 200)
 
         return () => clearTimeout(timer)
     }, [router])

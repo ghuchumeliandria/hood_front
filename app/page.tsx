@@ -2,6 +2,7 @@ import SignInPageForm from "./components/_molecules/signInPageForm/SignInPageFor
 import SignUpPageForm from "./components/_molecules/signInPageForm/SignInPageForm";
 import SignUpPageImages from "./components/_molecules/signUpPageImages/SignUpPageImages";
 import IsLoggedIn from "./guard/IsLoggedIn.guard";
+import NotLoggedIn from "./guard/NotLoggedIn.guard";
 
 
 
@@ -11,7 +12,7 @@ export default function Home() {
 
 
   return (
-    <IsLoggedIn>
+    <NotLoggedIn>
 
       <div className="w-full min-h-screen flex    items-center justify-between  px-10 py-6 gap-2 bg-linear-to-r from-orange-500 to-yellow-300 max-[1260px]:flex-col max-[1260px]:justify-center max-[500px]:justify-start max-[500px]:py-12 transition-all duration-200">
 
@@ -26,6 +27,6 @@ export default function Home() {
           <SignInPageForm />
         </div>
       </div>
-    </IsLoggedIn>
+    </NotLoggedIn>
   );
 }
