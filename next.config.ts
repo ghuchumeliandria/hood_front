@@ -5,12 +5,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'media.tenor.com',
-        port: '',       // ჩვეულებრივ ცარიელი
-        pathname: '/**', // ყველა გზა დაიშვება
-      },
-    ],
-  },
+        hostname: '**',
+        port: '',
+        pathname: '**',
+    },
+    ]
+  }
 };
 
 export default nextConfig;
