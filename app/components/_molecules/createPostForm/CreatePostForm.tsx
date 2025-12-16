@@ -4,10 +4,12 @@ import { CreatePostSchema, createPostSchema } from "@/app/validations/create-pos
 import { yupResolver } from "@hookform/resolvers/yup"
 import { getCookie } from "cookies-next"
 import { watch } from "fs"
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 
 export default function CreatePostForm() {
+    const [submitting, setSubmitting] = useState(false)
+
     const token = getCookie("token")
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -16,44 +18,49 @@ export default function CreatePostForm() {
         defaultValues: {
             title: "",
         },
-        mode: "onChange" // validation real-time
+        mode: "onChange"
     })
 
     const onSubmit = async ({ title }: CreatePostSchema) => {
         try {
+            setSubmitting(true)
+
             const resp = await axiosInstance.post(
                 "/posts/create-post",
                 { title },
                 { headers: { "Authorization": `Bearer ${token}` } }
             )
 
-            if (resp.status === 201) {
-                reset() // ველები გასუფთავდეს
-                textareaRef.current?.focus() // textarea ისევ ფოკუსში
-                console.log("posti warmatebit sheiqmna")
-            }
+            await new Promise(resolve => setTimeout(resolve, 2000))
+
+            window.location.reload()
+
         } catch (error) {
             console.log("Request failed", error)
+        }
+        finally {
+            setSubmitting(false)
         }
     }
 
     return (
         <div>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 ">
-                <input
+                <textarea
                     {...register("title")}
-                    type="text"
+
                     placeholder="Title..."
-                    className="mt-4 pb-2 border-b border-b-amber-300 placeholder:text-amber-600 focus:border-b-amber-500 outline-none"
+                    className="mt-4 pb-2 border-b resize-none border-b-amber-300 placeholder:text-amber-600 focus:border-b-amber-500 outline-none"
                 />
                 {errors.title && <p className='text-red-500 text-[14px]'>{errors.title.message}</p>}
 
 
                 <button
                     type="submit"
-                    className="bg-amber-500 text-white p-2 rounded hover:bg-amber-600 transition"
+                    disabled={submitting}
+                    className="bg-amber-500 cursor-pointer text-white p-2 rounded hover:bg-amber-600 transition disabled:opacity-50"
                 >
-                    Send
+                    {submitting ? "იგზავნება..." : "გაგზავნა"}
                 </button>
             </form>
         </div>

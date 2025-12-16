@@ -4,7 +4,7 @@ import FeedPost from '../feedPosts/FeedPost'
 
 export default function Feed() {
     return (
-        <div className='w-full max-w-[500px] flex items-center flex-col gap-5 '>
+        <div className='w-full max-w-125 flex items-center flex-col gap-5 '>
             <CreatePost />
             <FeedPost />
         </div>
