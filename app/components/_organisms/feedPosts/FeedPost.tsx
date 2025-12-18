@@ -31,7 +31,11 @@ export default function FeedPost() {
                 setLoading(true)
             }
         }
-        FetchPosts()
+        const interval = setInterval(() => {
+            FetchPosts()
+        }, 5000)
+
+        return () => clearInterval(interval)
     }, [])
 
     const toggleLike = async (postId: string) => {
