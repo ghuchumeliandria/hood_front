@@ -5,13 +5,24 @@ import { getCookie } from "cookies-next"
 import { useEffect, useState } from "react"
 import LoadingOverlay from "../../_atoms/loadingOverlay/LoadingOverlay"
 import Image from "next/image"
+import { GetCurrentUser } from "@/app/lib/getCurrentUser"
 
 export default function Suggestions() {
     const token = getCookie("token")
+    const [userr, setUserr] = useState<User | null>(null)
+
+    const { getCurrentUser } = GetCurrentUser()
     const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
     const [followedUsers, setFollowedUsers] = useState<Record<string, boolean>>({})
     const [loadingUserId, setLoadingUserId] = useState<string | null>(null)
+
+
+    useEffect(() => {
+        if (token) getCurrentUser({ token, setUser: setUserr })
+    }, [])
+
+
 
     const Follow = async (targetUserId: string) => {
 
@@ -23,8 +34,7 @@ export default function Suggestions() {
         }))
 
         try {
-            console.log(targetUserId)
-            const resp = await axiosInstance.patch("/users/follow", {
+            await axiosInstance.patch("/users/follow", {
                 targetUserId
             },
                 {
@@ -45,6 +55,10 @@ export default function Suggestions() {
             setLoadingUserId(null)
         }
     }
+
+    const usersToFollow = users.filter(user =>
+        !userr?.following.includes(user._id)
+    )
 
     useEffect(() => {
         const FetchSuggestionUsers = async () => {
@@ -70,10 +84,10 @@ export default function Suggestions() {
     if (loading) return <LoadingOverlay />
 
     return (
-        <div className="max-w-87.5 w-full border-2 border-amber-500 flex flex-col gap-3 max-[500px]:flex-wrap rounded-lg mt-3 p-5 bg-white shadow-md">
+        <div className="max-w-87.5 max-h-[80vh]  w-full border-2 border-amber-500 flex flex-col gap-3 max-[500px]:flex-wrap rounded-lg mt-3 p-5 bg-white shadow-md">
             <h1 className="text-[17px] font-medium mb-2">People You May Know</h1>
 
-            {users.map((el: User) => {
+            {usersToFollow.slice(0, 5).map((el: User) => {
                 const isFollowed = followedUsers[el._id]
 
                 return (
@@ -82,7 +96,7 @@ export default function Suggestions() {
                             src={el.avatar}
                             alt="profile img"
                             width={50}
-                            height={50}
+                            height={30}
                             className="rounded-full object-cover"
                         />
 

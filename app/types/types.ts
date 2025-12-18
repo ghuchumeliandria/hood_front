@@ -25,7 +25,9 @@ export type Post = {
     title: string;  
     content: string;  
     imageUrl?: string;  
-    likes: string[];      
+    likes: string[];   
+    likesCount: number;    
+    isLiked : boolean;   
     createdAt: Date;   
     updatedAt: Date; 
     __v: number; 

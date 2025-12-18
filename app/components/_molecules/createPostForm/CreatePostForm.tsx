@@ -50,7 +50,7 @@ export default function CreatePostForm() {
                     {...register("title")}
 
                     placeholder="Title..."
-                    className="mt-4 pb-2 border-b resize-none border-b-amber-300 placeholder:text-amber-600 focus:border-b-amber-500 outline-none"
+                    className="mt-4 pb-2 border-b wrap-break-word resize-none border-b-amber-300 placeholder:text-amber-600 focus:border-b-amber-500 outline-none"
                 />
                 {errors.title && <p className='text-red-500 text-[14px]'>{errors.title.message}</p>}
 
