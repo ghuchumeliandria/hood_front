@@ -7,12 +7,14 @@ import LoadingOverlay from '../../_atoms/loadingOverlay/LoadingOverlay'
 import Image from 'next/image'
 import EmptyState from '../../_atoms/emptyState/EmptyState'
 import { jwtDecode } from 'jwt-decode'
+import '@/app/lib/time-ago'
+import ReactTimeAgo from 'react-time-ago'
+
 export default function FeedPost() {
     const [posts, setPosts] = useState<Post[]>([])
     const token = getCookie("token")
     const [loading, setLoading] = useState(true)
-
-
+    const [activeId, setActiveId] = useState<string | null>(null)
     const decoded: any = jwtDecode(token as string);
     const userId = decoded.id;
 
@@ -39,7 +41,6 @@ export default function FeedPost() {
     }, [])
 
     const toggleLike = async (postId: string) => {
-        console.log(userId)
         if (!userId) return
         setPosts(prevPosts =>
             prevPosts.map(post => {
@@ -83,6 +84,20 @@ export default function FeedPost() {
         }
     }
 
+    const deletePost = async (postId: string) => {
+        try {
+            await axiosInstance.delete(`posts/delete-post/${postId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            },
+            )
+            window.location.reload()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     if (loading) return <LoadingOverlay />
     return (
         <div className='w-full bg-white p-5 border-2 border-amber-500 rounded-lg shadow-md '>
@@ -106,11 +121,25 @@ export default function FeedPost() {
                                 )}
                                 <span className="font-semibold text-[15px] text-amber-600">{el?.authorId.fullname}</span>
                             </div>
-                            <h1>{new Date(el.createdAt).toLocaleDateString('ka-GE')}</h1>
+                            <div className="flex items-center gap-2 relative">
+                                <h1 className='text-amber-600'>  <ReactTimeAgo date={el.createdAt} locale="ka" /></h1>
+                                <button onClick={() => setActiveId(prev => (prev === el._id ? null : el._id))} className='bg-[#f7a7303d] rounded-sm px-1 py-0.5 cursor-pointer'>
+                                    <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#FFC107" className="bi bi-three-dots-vertical w-5" transform="rotate(90)" stroke="#FFC107"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"></path> </g></svg>
+                                </button>
+                                {activeId === el._id &&
+                                    <div className="absolute -top-6 right-0 ">
+                                        <button className='cursor-pointer' onClick={() => deletePost(el._id)}>
+                                            <svg viewBox="0 0 1024 1024" className="icon w-6" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M154 260h568v700H154z" fill="#FF3B30"></path><path d="M624.428 261.076v485.956c0 57.379-46.737 103.894-104.391 103.894h-362.56v107.246h566.815V261.076h-99.864z" fill="#030504"></path><path d="M320.5 870.07c-8.218 0-14.5-6.664-14.5-14.883V438.474c0-8.218 6.282-14.883 14.5-14.883s14.5 6.664 14.5 14.883v416.713c0 8.219-6.282 14.883-14.5 14.883zM543.5 870.07c-8.218 0-14.5-6.664-14.5-14.883V438.474c0-8.218 6.282-14.883 14.5-14.883s14.5 6.664 14.5 14.883v416.713c0 8.219-6.282 14.883-14.5 14.883z" fill="#152B3C"></path><path d="M721.185 345.717v-84.641H164.437z" fill="#030504"></path><path d="M633.596 235.166l-228.054-71.773 31.55-99.3 228.055 71.773z" fill="#FF3B30"></path><path d="M847.401 324.783c-2.223 0-4.475-0.333-6.706-1.034L185.038 117.401c-11.765-3.703-18.298-16.239-14.592-27.996 3.706-11.766 16.241-18.288 27.993-14.595l655.656 206.346c11.766 3.703 18.298 16.239 14.592 27.996-2.995 9.531-11.795 15.631-21.286 15.631z" fill="#FF3B30"></path></g></svg>
+                                        </button>
+
+                                    </div>
+                                }
+                            </div>
+
                         </div>
 
                         <h1>{el.title}</h1>
-                        <div className="flex mt-2 relative">
+                        <div className="flex mt-2 ">
                             <button
                                 onClick={() => toggleLike(el._id)}
                                 className={`flex-1 flex items-center gap-2 py-1 px-2 font-semibold transition-all duration-200 rounded cursor-pointer
@@ -127,7 +156,7 @@ export default function FeedPost() {
                                         d="M22 11.5c0-2.097-1.228-3.498-3.315-3.498h-2.918c.089-.919.133-1.752.133-2.502 0-1.963-1.81-3.5-3.64-3.5-1.414 0-1.81.81-2.049 2.683-.004.034-.094.762-.125.995-.055.407-.112.77-.182 1.133-.273 1.414-.989 2.944-1.727 3.841a2.317 2.317 0 0 0-.456-.318C7.314 10.116 6.838 10 6.153 10h-.306c-.685 0-1.16.116-1.568.334a2.272 2.272 0 0 0-.945.945c-.218.407-.334.883-.334 1.568v5.306c0 .685.116 1.16.334 1.568.218.407.538.727.945.945.407.218.883.334 1.568.334h.306c.685 0 1.16-.116 1.568-.334.235-.126.441-.286.615-.477.697.525 1.68.811 2.985.811h4.452c1.486 0 2.565-.553 3.253-1.487.284-.384.407-.652.597-1.166a.806.806 0 0 1 .162-.214c.026-.028.11-.112.208-.21.135-.134.296-.295.369-.373.323-.346.576-.69.782-1.103.357-.713.406-1.258.337-2.173-.026-.35-.027-.464-.008-.542.034-.145.075-.265.147-.447l.066-.166c.22-.552.314-.971.314-1.619z"
                                     />
                                 </svg>
-                                {el.isLiked ? "მოწონებულია" : "მოწონება"}
+                                მოწონება
                             </button>
                             <button className='flex-1 flex gap-2 py-1 px-1 font-semibold text-amber-600 hover:bg-[#ffb7747d] transition-all duration-200 cursor-pointer'>
                                 <svg viewBox="0 0 32 32" fill="none" className='w-6' xmlns="http://www.w3.org/2000/svg" stroke="#FFC107"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g clipPath="url(#clip0_901_2836)"> <path d="M25.9199 27H7.99988C7.44988 27 6.99988 26.55 6.99988 26V21V8C6.99988 7.45 7.44988 7 7.99988 7H24.9999H29.9999C30.5499 7 30.9999 7.45 30.9999 8V30C30.9999 31 30.5499 31.61 28.9409 30C28.4199 29.48 27.0799 28.16 25.9199 27Z" fill="#FFC44D"></path> <path d="M25 2V7H8C7.45 7 7 7.45 7 8V21H2C1.45 21 1 20.55 1 20V2C1 1.45 1.45 1 2 1H24C24.6 1 25 1.44 25 2Z" fill="#FFE6EA"></path> <path d="M23.875 25C23.875 25 27.937 29 28.937 30C30.547 31.609 31 31 31 30V8C31 7.447 30.553 7 30 7H8C7.447 7 7 7.447 7 8V26C7 26.553 7.447 27 8 27H22M13 15H25M13 19H18M25 4V2C25 1.437 24.604 1 24 1H2C1.447 1 1 1.447 1 2V20C1 20.553 1.447 21 2 21H7" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g> <defs> <clipPath id="clip0_901_2836"> <rect width="32" height="32" fill="white"></rect> </clipPath> </defs> </g></svg>
